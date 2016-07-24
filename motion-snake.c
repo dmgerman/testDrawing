@@ -37,12 +37,25 @@ on_draw (GtkWidget *window,
 
   j = snake_head;
   cairo_move_to (cr, cursor_x[j], cursor_y[j]);
+  double color = 0;
+  double color2 = 0;
   for (i=0; i<SNAKE_LENGTH; i++)
     {
-      cairo_line_to (cr, cursor_x[j], cursor_y[j]);
+        color +=0.1;
+        if (color > 0.8) color = 0;
+        color2 += 0.2;
+        if (color2 > 0.8) color2 = 0;
+        if (i %2 == 0)
+            cairo_set_source_rgba(cr, color, color2,0.9, 1.0);
+        else
+            cairo_set_source_rgba(cr, 0.9, 0.9,0.9, 1.0);
+        if (j > 1)
+            cairo_move_to (cr, cursor_x[j-1], cursor_y[j-1]);
+            cairo_line_to (cr, cursor_x[j], cursor_y[j]);
+        cairo_stroke (cr);
+
       j = (j + 1) % SNAKE_LENGTH;
     }
-  cairo_stroke (cr);
 }
 
 int

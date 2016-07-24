@@ -34,13 +34,16 @@ configure_event_cb (GtkWidget         *widget,
                     GdkEventConfigure *event,
                     gpointer           data)
 {
+     GtkAllocation allocation;
     if (surface)
         cairo_surface_destroy (surface);
-  
+
+     gtk_widget_get_allocation (widget, &allocation);
+
     surface = gdk_window_create_similar_surface (gtk_widget_get_window (widget),
                                                  CAIRO_CONTENT_COLOR,
-                                                 gtk_widget_get_allocated_width (widget),
-                                                 gtk_widget_get_allocated_height (widget));
+                                                 allocation.width,
+                                                 allocation.height);
   
     /* Initialize the surface to white */
     clear_surface ();
@@ -96,7 +99,7 @@ draw_line (GtkWidget *widget,
     cairo_t *cr;
     static double color=0;
     static double color2=0;
-    static alternate = 0;
+    static int alternate = 0;
     color += 0.1;
     if (color > 0.8)
         color = 0;
@@ -255,7 +258,6 @@ main (int   argc,
 
     da = gtk_drawing_area_new ();
 
-    gdk_window_set_event_compression (gtk_widget_get_parent_window (window), FALSE);
 
     /* set a minimum size */
     gtk_widget_set_size_request (da, 1000, 700);
@@ -286,6 +288,17 @@ main (int   argc,
                            | GDK_POINTER_MOTION_HINT_MASK);
 
     gtk_widget_show_all (window);
+
+#ifndef GTK2
+     GdkWindow *gdk_window = gtk_widget_get_window(window);
+
+     printf("Pointer to gdkwindow [%x]\n", gdk_window);
+     printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
+//    gdk_window_set_event_compression (gtk_widget_get_parent_window (window), FALSE);
+      gdk_window_set_event_compression (gdk_window, FALSE);
+     printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
+#endif
+
 
     gtk_main ();
 
