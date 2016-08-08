@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 #include <math.h>
 
-#define SNAKE_LENGTH 300
+#define SNAKE_LENGTH 3000
 double cursor_x[SNAKE_LENGTH], cursor_y[SNAKE_LENGTH];
 int snake_head = 0;
 
